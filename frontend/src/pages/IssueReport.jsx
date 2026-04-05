@@ -4,6 +4,15 @@ import { AlertCircle, Send, Upload, X, Image, Calendar, CheckCircle } from 'luci
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const schemaFields = [
+    { label: 'issue_id', note: 'auto' },
+    { label: 'user_id', note: 'auto' },
+    { label: 'report_date' },
+    { label: 'report_status' },
+    { label: 'issue_description' },
+    { label: 'photo_file', note: 'optional' }
+];
+
 const IssueReport = () => {
     const [desc, setDesc] = useState('');
     const [photoFile, setPhotoFile] = useState(null);
@@ -56,7 +65,6 @@ const IssueReport = () => {
             const user = JSON.parse(userStr);
             const userId = user._id || user.id;
 
-            // Use FormData to support file upload
             const formData = new FormData();
             formData.append('user', userId);
             formData.append('description', desc);
@@ -127,7 +135,6 @@ const IssueReport = () => {
             style={{ padding: '4rem 20px', maxWidth: '700px', margin: '0 auto' }}
         >
             <div className="glass-panel" style={{ padding: '3rem 2rem' }}>
-                {/* Header */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '1.5rem' }}>
                     <div style={{ background: 'rgba(239, 68, 68, 0.12)', padding: '14px', borderRadius: '14px' }}>
                         <AlertCircle color="#ef4444" size={34} />
@@ -135,19 +142,87 @@ const IssueReport = () => {
                     <div>
                         <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>Report an Issue</h2>
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
-                            Encountered a problem? We're here to help.
+                            Encountered a problem? We&apos;re here to help.
                         </p>
                     </div>
                 </div>
 
-                {/* Schema Info Banner */}
-                <div style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '10px', padding: '12px 16px', marginBottom: '2rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    📋 Fields: <strong style={{ color: 'white' }}>issue_id</strong> (auto) · <strong style={{ color: 'white' }}>user_id</strong> (auto) · <strong style={{ color: 'white' }}>report_date</strong> · <strong style={{ color: 'white' }}>report_status</strong> · <strong style={{ color: 'white' }}>issue_description</strong> · <strong style={{ color: 'white' }}>photo_file</strong>
+                <div
+                    style={{
+                        background: 'linear-gradient(180deg, rgba(59,130,246,0.10), rgba(37,99,235,0.06))',
+                        border: '1px solid rgba(59,130,246,0.24)',
+                        borderRadius: '14px',
+                        padding: '16px 18px',
+                        marginBottom: '2rem'
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                        <div
+                            style={{
+                                width: '34px',
+                                height: '34px',
+                                borderRadius: '10px',
+                                background: 'rgba(59,130,246,0.16)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#93c5fd',
+                                fontSize: '1rem',
+                                fontWeight: 700
+                            }}
+                        >
+                            i
+                        </div>
+                        <div>
+                            <p style={{ fontSize: '0.82rem', color: '#93c5fd', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+                                Submission Schema
+                            </p>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                These fields are stored with each issue report.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                        {schemaFields.map((field) => (
+                            <div
+                                key={field.label}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '10px 12px',
+                                    borderRadius: '999px',
+                                    background: 'rgba(15,23,42,0.55)',
+                                    border: '1px solid rgba(148,163,184,0.18)',
+                                    maxWidth: '100%'
+                                }}
+                            >
+                                <span style={{ color: 'white', fontWeight: 700, fontSize: '0.92rem', wordBreak: 'break-word' }}>
+                                    {field.label}
+                                </span>
+                                {field.note && (
+                                    <span
+                                        style={{
+                                            color: '#93c5fd',
+                                            background: 'rgba(59,130,246,0.14)',
+                                            border: '1px solid rgba(59,130,246,0.22)',
+                                            borderRadius: '999px',
+                                            padding: '2px 8px',
+                                            fontSize: '0.74rem',
+                                            fontWeight: 700,
+                                            textTransform: 'uppercase'
+                                        }}
+                                    >
+                                        {field.note}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
-                    {/* Report Date */}
                     <div>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>
                             <Calendar size={16} /> Report Date
@@ -165,7 +240,6 @@ const IssueReport = () => {
                         />
                     </div>
 
-                    {/* Report Status (read-only) */}
                     <div>
                         <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>
                             Report Status
@@ -181,7 +255,6 @@ const IssueReport = () => {
                         </div>
                     </div>
 
-                    {/* Issue Description */}
                     <div>
                         <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>
                             Issue Description *
@@ -190,7 +263,7 @@ const IssueReport = () => {
                             value={desc}
                             onChange={e => setDesc(e.target.value)}
                             required
-                            placeholder="Please describe the issue in detail — what happened, where, and when..."
+                            placeholder="Please describe the issue in detail: what happened, where, and when."
                             rows={5}
                             style={{
                                 width: '100%', padding: '14px 16px', borderRadius: '10px',
@@ -202,7 +275,6 @@ const IssueReport = () => {
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '4px' }}>{desc.length} characters</p>
                     </div>
 
-                    {/* Photo File Upload */}
                     <div>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem' }}>
                             <Image size={16} /> Photo Evidence (Optional)
@@ -226,8 +298,8 @@ const IssueReport = () => {
                                     whileHover={{ borderColor: 'rgba(59,130,246,0.6)', background: 'rgba(59,130,246,0.04)' }}
                                 >
                                     <Upload size={36} color="var(--text-muted)" style={{ margin: '0 auto 12px' }} />
-                                    <p style={{ fontWeight: 600, marginBottom: '4px' }}>Click or drag & drop to upload</p>
-                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>JPEG, PNG, GIF, WebP · Max 5MB</p>
+                                    <p style={{ fontWeight: 600, marginBottom: '4px' }}>Click or drag and drop to upload</p>
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>JPEG, PNG, GIF, WebP - Max 5MB</p>
                                 </motion.div>
                             ) : (
                                 <motion.div
@@ -257,8 +329,8 @@ const IssueReport = () => {
                                             <X size={16} />
                                         </motion.button>
                                     </div>
-                                    <div style={{ padding: '10px 14px', background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>📎 {photoFile?.name}</span>
+                                    <div style={{ padding: '10px 14px', background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Attachment: {photoFile?.name}</span>
                                         <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{(photoFile?.size / (1024 * 1024)).toFixed(2)} MB</span>
                                     </div>
                                 </motion.div>
@@ -274,7 +346,6 @@ const IssueReport = () => {
                         />
                     </div>
 
-                    {/* Submit Button */}
                     <motion.button
                         whileHover={{ scale: 1.02, boxShadow: '0 15px 35px rgba(59,130,246,0.4)' }}
                         whileTap={{ scale: 0.98 }}
@@ -292,7 +363,7 @@ const IssueReport = () => {
                         {loading ? (
                             <>Submitting Report...</>
                         ) : (
-                            <> <Send size={20} /> Submit Issue Report</>
+                            <><Send size={20} /> Submit Issue Report</>
                         )}
                     </motion.button>
                 </form>
